@@ -293,7 +293,7 @@ int SyntacticalAnalyzer::more_tokens()
 
 int SyntacticalAnalyzer::any_other_token()
 {
-            lex->debug << "quoted_lit function called\n";
+            lex->debug << "any_other_token function called\n";
                 int errors = 0;
                 
                 switch(token){
@@ -424,7 +424,7 @@ int SyntacticalAnalyzer::any_other_token()
                                          
                                          }
                                          
-                                         lex->debug << "quoted_lit function returning " << errors << " errors\n";
+                                         lex->debug << "any_other_token function returning " << errors << " errors\n";
                                          return errors;
                                          }
                                          
