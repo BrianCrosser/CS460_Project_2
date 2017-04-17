@@ -24,7 +24,6 @@ SyntacticalAnalyzer::SyntacticalAnalyzer (char * filename)
     filename[fnlength-1] = '2';
     p2file.open (filename);
     token = lex->GetToken();
-    lex->debug << "Current Token: " + token << endl;
     int errors = program ();
 }
 
@@ -39,12 +38,10 @@ SyntacticalAnalyzer::~SyntacticalAnalyzer ()
 int SyntacticalAnalyzer::program()
 {
     lex->debug << "program function called\n";
-    p2file << "program";
     int errors = 0;
     if(token == LPAREN_T){
-        p2file << " on rule 1\n";
+        p2file << "program on rule 1\n";
         token = lex->GetToken();
-        lex->debug << "Current Token: " + token << endl;
         errors += define();
         errors += more_defines();
     }
@@ -62,22 +59,17 @@ int SyntacticalAnalyzer::program()
 int SyntacticalAnalyzer::define()
 {
     lex->debug << "define function called\n";
-    p2file << "define";
     int errors = 0;
     if(token == DEFINE_T){
             token = lex->GetToken();
-            lex->debug << "Current Token: " + token << endl;
             if(token == LPAREN_T){
                 token = lex->GetToken();
-                lex->debug << "Current Token: " + token << endl;
                 if(token == IDENT_T){
                     token = lex->GetToken();
-                    lex->debug << "Current Token: " + token << endl;
+                    p2file << "define on rule 2\n";
                     errors += param_list();
                     if(token == RPAREN_T){
-                        p2file << " on rule 2\n";
                         token = lex->GetToken();
-                        lex->debug << "Current Token: " + token << endl;
                         errors += stmt();
                         errors += stmt_list();
                     } else {
@@ -98,7 +90,7 @@ int SyntacticalAnalyzer::define()
         lex->ReportError("Exptected LPAREN_T in define's follow set; " + lex->GetLexeme());
     }
     else{
-        p2file << " on rule 1/3\n";	// how to tell if it is rule 1 or rule 3 in the follow set?
+        p2file << "define on rule 1/3\n";	// how to tell if it is rule 1 or rule 3 in the follow set?
     }
     
     lex->debug << "define function returning " << errors << " errors\n";
@@ -108,21 +100,18 @@ int SyntacticalAnalyzer::define()
 int SyntacticalAnalyzer::more_defines()
 {
     lex->debug << "more_defines function called\n";
-    p2file << "more_defines";
     int errors = 0;
     
     switch(token){
         case LPAREN_T:
-            p2file << " on rule 3\n";
+            p2file << "more_defines on rule 3\n";
             token = lex->GetToken();
-            lex->debug << "Current Token: " + token << endl;
             errors += define();
             errors += more_defines();
             
         case EOF_T:
             token = lex->GetToken();
-            lex->debug << "Current Token: " + token << endl;
-            p2file << " on rule 4\n";
+            p2file << "more_defines on rule 4\n";
     }
     
     lex->debug << "more_defines function returning " << errors << " errors\n";
@@ -132,14 +121,12 @@ int SyntacticalAnalyzer::more_defines()
 int SyntacticalAnalyzer::param_list()
 {
     lex->debug << "param_list function called\n";
-    p2file << "param_list";
     int errors = 0;
     
     switch(token){
         case IDENT_T:
-            p2file << " on rule 15\n";
+            p2file << "param_list on rule 15\n";
             token = lex->GetToken();
-            lex->debug << "Current Token: " + token << endl;
             errors += param_list();
     }
     
@@ -150,31 +137,26 @@ int SyntacticalAnalyzer::param_list()
 int SyntacticalAnalyzer::stmt()
 {
     lex->debug << "stmt function called\n";
-    p2file << "stmt";
     int errors = 0;
     
     switch(token){
         case LPAREN_T:
-            p2file << " on rule 9\n";
+            p2file << "stmt on rule 9\n";
             token = lex->GetToken();
-            lex->debug << "Current Token: " + token << endl;
             errors += action();
             
         case IDENT_T:
-            p2file << " on rule 8\n";
+            p2file << "stmt on rule 8\n";
             token = lex->GetToken();
-            lex->debug << "Current Token: " + token << endl;
             
         case NUMLIT_T:
-            p2file << " on rule 7\n";
+            p2file << "stmt on rule 7\n";
             token = lex->GetToken();
-            lex->debug << "Current Token: " + token << endl;
             errors += literal();
             
         case QUOTE_T:
-            p2file << " on rule 7\n";
-            token = lex->GetToken();
-            lex->debug << "Current Token: " + token << endl;
+            p2file << "stmt on rule 7\n";
+            //token = lex->GetToken();
             errors += literal();
             
         default:
@@ -189,38 +171,32 @@ int SyntacticalAnalyzer::stmt()
 int SyntacticalAnalyzer::stmt_list()
 {
     lex->debug << "stmt_list function called\n";
-    p2file << "stmt_list";
     int errors = 0;
     
     switch(token){
         case LPAREN_T:
-            p2file << " on rule 5\n";
+            p2file << "stmt_list on rule 5\n";
             token = lex->GetToken();
-            lex->debug << "Current Token: " + token << endl;
             errors += stmt();
             
         case IDENT_T:
-            p2file << " on rule 5\n";
+            p2file << "stmt_list on rule 5\n";
             token = lex->GetToken();
-            lex->debug << "Current Token: " + token << endl;
             errors += stmt();
             
         case RPAREN_T:
-            p2file << " on rule 6\n";
+            p2file << "stmt_list on rule 6\n";
             token = lex->GetToken();
-            lex->debug << "Current Token: " + token << endl;
             errors += stmt();
             
         case NUMLIT_T:
-            p2file << " on rule 5\n";
+            p2file << "stmt_list on rule 5\n";
             token = lex->GetToken();
-            lex->debug << "Current Token: " + token << endl;
             errors += stmt();
             
         case QUOTE_T:
-            p2file << " on rule 5\n";
-            token = lex->GetToken();
-            lex->debug << "Current Token: " + token << endl;
+            p2file << "stmt_list on rule 5\n";
+            //token = lex->GetToken();
             errors += stmt();
             
         default:
@@ -235,19 +211,16 @@ int SyntacticalAnalyzer::stmt_list()
 int SyntacticalAnalyzer::literal()
 {
     lex->debug << "literal function called\n";
-    p2file << "literal";
     int errors = 0;
     
     switch(token){
         case NUMLIT_T:
-            p2file << " on rule 10\n";
+            p2file << "literal on rule 10\n";
             token = lex->GetToken();
-            lex->debug << "Current Token: " + token << endl;
             
         case QUOTE_T:
-            p2file << " on rule 11\n";
+            p2file << "literal on rule 11\n";
             token = lex->GetToken();
-            lex->debug << "Current Token: " + token << endl;
             errors += quoted_lit();
             
         default:
@@ -262,7 +235,6 @@ int SyntacticalAnalyzer::literal()
 int SyntacticalAnalyzer::quoted_lit()
 {
                 lex->debug << "quoted_lit function called\n";
-                p2file << "quoted_lit";
                 int errors = 0;
                 
                 switch(token){
@@ -275,9 +247,8 @@ int SyntacticalAnalyzer::quoted_lit()
                         lex->ReportError("Expecting any_other_token; " + lex->GetLexeme());
                         
                     default:
-                        p2file << " on rule 12\n";
+                        p2file << "quoted_lit on rule 12\n";
                         token = lex->GetToken();
-                        lex->debug << "Current Token: " + token << endl;
                         errors += any_other_token();
                 }
                 
@@ -288,12 +259,11 @@ int SyntacticalAnalyzer::quoted_lit()
 int SyntacticalAnalyzer::more_tokens()
 {
     lex->debug << "more_tokens function called\n";
-    p2file << "more_tokens";
     int errors = 0;
 
     switch(token){
         case RPAREN_T:
-            p2file << " on rule 14\n";
+            p2file << "more_tokens on rule 14\n";
             token = lex->GetToken();
             lex->debug << "Current Token: " + token << endl;
 
@@ -310,9 +280,8 @@ int SyntacticalAnalyzer::more_tokens()
             lex->ReportError("Unexpected token; " + lex->GetLexeme());
 
         default:
-            p2file << " on rule 13\n";
+            p2file << "more_tokens on rule 13\n";
             token = lex->GetToken();
-            lex->debug << "Current Token: " + token << endl;
             errors += any_other_token();
             errors += more_tokens();
     }    
@@ -325,14 +294,12 @@ int SyntacticalAnalyzer::more_tokens()
 int SyntacticalAnalyzer::any_other_token()
 {
             lex->debug << "quoted_lit function called\n";
-                p2file << "quoted_lit";
                 int errors = 0;
                 
                 switch(token){
                     case LPAREN_T:
-                        p2file << " on rule 44\n";
+                        p2file << "any_other_token on rule 44\n";
                         token = lex->GetToken();
-                        lex->debug << "Current Token: " + token << endl;
                        errors += more_tokens();
                         if(token != RPAREN_T){
                             errors++;
@@ -340,115 +307,115 @@ int SyntacticalAnalyzer::any_other_token()
                         }
                         
                     case IDENT_T:
-                        p2file << " on rule 45\n";
+                        p2file << "any_other_token on rule 45\n";
                         token = lex->GetToken();
                         
                     case NUMLIT_T:
-                        p2file << " on rule 46\n";
+                        p2file << "any_other_token on rule 46\n";
                         token = lex->GetToken();
                         
                     case CONS_T:
-                        p2file << " on rule 47\n";
+                        p2file << "any_other_token on rule 47\n";
                         token = lex->GetToken();
                         
                     case IF_T:
-                        p2file << " on rule 48\n";
+                        p2file << "any_other_token on rule 48\n";
                         token = lex->GetToken();
                         
                     case DISPLAY_T:
-                        p2file << " on rule 49\n";
+                        p2file << "any_other_token on rule 49\n";
                         token = lex->GetToken();
                         
                     case NEWLINE_T:
-                        p2file << " on rule 50\n";
+                        p2file << "any_other_token on rule 50\n";
                         token = lex->GetToken();
                         
                     case LISTOP_T:
-                        p2file << " on rule 51\n";
+                        p2file << "any_other_token on rule 51\n";
                         token = lex->GetToken();
                         
                     case AND_T:
-                        p2file << " on rule 52\n";
+                        p2file << "any_other_token on rule 52\n";
                         token = lex->GetToken();
                         
                     case OR_T:
-                        p2file << " on rule 53\n";
+                        p2file << "any_other_token on rule 53\n";
                         token = lex->GetToken();
                         
                     case NOT_T:
-                        p2file << " on rule 54\n";
+                        p2file << "any_other_token on rule 54\n";
                         token = lex->GetToken();
                         
                     case DEFINE_T:
-                        p2file << " on rule 55\n";
+                        p2file << "any_other_token on rule 55\n";
                         token = lex->GetToken();
                         
                     case NUMBERP_T:
-                        p2file << " on rule 56\n";
+                        p2file << "any_other_token on rule 56\n";
                         token = lex->GetToken();
                         
                     case SYMBOLP_T:
-                        p2file << " on rule 57\n";
+                        p2file << "any_other_token on rule 57\n";
                         token = lex->GetToken();
                         
                     case LISTP_T:
-                        p2file << " on rule 58\n";
+                        p2file << "any_other_token on rule 58\n";
                         token = lex->GetToken();
                         
                     case ZEROP_T:
-                        p2file << " on rule 59\n";
+                        p2file << "any_other_token on rule 59\n";
                         token = lex->GetToken();
                         
                     case NULLP_T:
-                        p2file << " on rule 60\n";
+                        p2file << "any_other_token on rule 60\n";
                         token = lex->GetToken();
                         
                     case CHARP_T:
-                        p2file << " on rule 61\n";
+                        p2file << "any_other_token on rule 61\n";
                         token = lex->GetToken();
                         
                     case STRINGP_T:
-                        p2file << " on rule 62\n";
+                        p2file << "any_other_token on rule 62\n";
                         token = lex->GetToken();
                         
                     case PLUS_T:
-                        p2file << " on rule 63\n";
+                        p2file << "any_other_token on rule 63\n";
                         token = lex->GetToken();
                         
                     case MINUS_T:
-                        p2file << " on rule 64\n";
+                        p2file << "any_other_token on rule 64\n";
                         token = lex->GetToken();
                         
                     case DIV_T:
-                        p2file << " on rule 65\n";
+                        p2file << "any_other_token on rule 65\n";
                         token = lex->GetToken();
                         
                     case MULT_T:
-                        p2file << " on rule 66\n";
+                        p2file << "any_other_token on rule 66\n";
                         token = lex->GetToken();
                         
                     case EQUALTO_T:
-                        p2file << " on rule 67\n";
+                        p2file << "any_other_token on rule 67\n";
                         token = lex->GetToken();
                         
                     case GT_T:
-                        p2file << " on rule 68\n";
+                        p2file << "any_other_token on rule 68\n";
                         token = lex->GetToken();
                         
                     case LT_T:
-                        p2file << " on rule 69\n";
+                        p2file << "any_other_token on rule 69\n";
                         token = lex->GetToken();
                         
                     case GTE_T:
-                        p2file << " on rule 70\n";
+                        p2file << "any_other_token on rule 70\n";
                         token = lex->GetToken();
                         
                     case LTE_T:
-                        p2file << " on rule 71\n";
+                        p2file << "any_other_token on rule 71\n";
                         token = lex->GetToken();
                         
                     case QUOTE_T:
-                        p2file << " on rule 72\n";
+                        p2file << "any_other_token on rule 72\n";
                         token = lex->GetToken();
                         
                     default:
@@ -464,16 +431,15 @@ int SyntacticalAnalyzer::any_other_token()
 int SyntacticalAnalyzer::else_part()
                         {
                             lex->debug << "else_part function called\n";
-                            p2file << "else_part";
                             int errors = 0;
                             
                             switch(token){
                                 case RPAREN_T:
-                                    p2file << " on rule 18\n";
+                                    p2file << "else_part on rule 18\n";
                                     token = lex->GetToken();
                                     
                                 default:
-                                    p2file << " on rule 17\n";
+                                    p2file << "else_part on rule 17\n";
                                     token = lex->GetToken();
                                     errors += stmt();
                                     
@@ -484,136 +450,135 @@ int SyntacticalAnalyzer::else_part()
 int SyntacticalAnalyzer::action()
                         {
                             lex->debug << "action function called\n";
-                            p2file << "action";
                             int errors = 0;
                             
                             switch(token){  
                                 case IDENT_T:
-                                    p2file << " on rule 41\n";
+                                    p2file << "action on rule 41\n";
                                     token = lex->GetToken();
                                     errors += stmt_list();
                                     
                                 case IF_T:
-                                    p2file << " on rule 19\n";
+                                    p2file << "action on rule 19\n";
                                     token = lex->GetToken();
                                     errors += stmt();
                                     errors += stmt();
                                     errors += else_part();
                                     
                                 case LISTOP_T:
-                                    p2file << " on rule 20\n";
+                                    p2file << "action on rule 20\n";
                                     token = lex->GetToken();
                                     errors += stmt();
                                     
                                 case CONS_T:
-                                    p2file << " on rule 21\n";
+                                    p2file << "action on rule 21\n";
                                     token = lex->GetToken();
                                     errors += stmt();
                                     errors += stmt();
                                     
                                 case AND_T:
-                                    p2file << " on rule 22\n";
+                                    p2file << "action on rule 22\n";
                                     token = lex->GetToken();
                                     errors += stmt_list();
                                     
                                 case OR_T:
-                                    p2file << " on rule 23\n";
+                                    p2file << "action on rule 23\n";
                                     token = lex->GetToken();
                                     errors += stmt_list();    
                                     
                                 case NOT_T:
-                                    p2file << " on rule 24\n";
+                                    p2file << "action on rule 24\n";
                                     token = lex->GetToken();
                                     errors += stmt();    
                                     
                                 case NUMBERP_T:
-                                    p2file << " on rule 25\n";
+                                    p2file << "action on rule 25\n";
                                     token = lex->GetToken();
                                     errors += stmt();    
                                     
                                 case SYMBOLP_T:
-                                    p2file << " on rule 26\n";
+                                    p2file << "action on rule 26\n";
                                     token = lex->GetToken();
                                     errors += stmt();    
                                     
                                 case LISTP_T:
-                                    p2file << " on rule 27\n";
+                                    p2file << "action on rule 27\n";
                                     token = lex->GetToken();
                                     errors += stmt();    
                                     
                                 case ZEROP_T:
-                                    p2file << " on rule 28\n";
+                                    p2file << "action on rule 28\n";
                                     token = lex->GetToken();
                                     errors += stmt();
                                     
                                 case NULLP_T:
-                                    p2file << " on rule 29\n";
+                                    p2file << "action on rule 29\n";
                                     token = lex->GetToken();
                                     errors += stmt();    
                                     
                                 case CHARP_T:
-                                    p2file << " on rule 30\n";
+                                    p2file << "action on rule 30\n";
                                     token = lex->GetToken();
                                     errors += stmt();    
                                     
                                 case STRINGP_T:
-                                    p2file << " on rule 31\n";
+                                    p2file << "action on rule 31\n";
                                     token = lex->GetToken();
                                     errors += stmt();    
                                     
                                 case PLUS_T:
-                                    p2file << " on rule 32\n";
+                                    p2file << "action on rule 32\n";
                                     token = lex->GetToken();
                                     errors += stmt_list();
                                     
                                 case DISPLAY_T:
-                                    p2file << " on rule 42\n";
+                                    p2file << "action on rule 42\n";
                                     token = lex->GetToken();
                                     errors += stmt();    
                                     
                                 case NEWLINE_T:
-                                    p2file << " on rule 43\n";
+                                    p2file << "action on rule 43\n";
                                     token = lex->GetToken();
                                     
                                 case MINUS_T:
-                                    p2file << " on rule 33\n";
+                                    p2file << "action on rule 33\n";
                                     token = lex->GetToken();
                                     errors += stmt();
                                     errors += stmt_list();    
                                     
                                 case DIV_T:
-                                    p2file << " on rule 34\n";
+                                    p2file << "action on rule 34\n";
                                     token = lex->GetToken();
                                     errors += stmt();
                                     errors += stmt_list();    
                                     
                                 case MULT_T:
-                                    p2file << " on rule 35\n";
+                                    p2file << "action on rule 35\n";
                                     token = lex->GetToken();
                                     errors += stmt_list();
                                     
                                 case EQUALTO_T:
-                                    p2file << " on rule 36\n";
+                                    p2file << "action on rule 36\n";
                                     token = lex->GetToken();
                                     errors += stmt_list();    
                                     
                                 case GT_T:
-                                    p2file << " on rule 37\n";
+                                    p2file << "action on rule 37\n";
                                     token = lex->GetToken();
                                     errors += stmt_list();    
                                     
                                 case LT_T:
-                                    p2file << " on rule 38\n";
+                                    p2file << "action on rule 38\n";
                                     token = lex->GetToken();
                                     errors += stmt_list();    
                                     
                                 case GTE_T:
-                                    p2file << " on rule 30\n";
+                                    p2file << "action on rule 30\n";
                                     token = lex->GetToken();
                                     errors += stmt_list();    
                                     
                                 case LTE_T:
-                                    p2file << " on rule 40\n";
+                                    p2file << "action on rule 40\n";
                                     token = lex->GetToken();
                                     errors += stmt_list();        
                             }

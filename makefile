@@ -20,14 +20,14 @@ clean :
 	rm *.o P2.out *.dbg *.lst *.p2 *.p1
 
 submit : Project2.cpp LexicalAnalyzer.h LexicalAnalyzer.save SyntacticalAnalyzer.h SyntacticalAnalyzer.cpp makefile README.txt
-	rm -rf ylnP2
-	mkdir ylnP2
-	cp Project2.cpp ylnP2
-	cp LexicalAnalyzer.h ylnP2
-	cp LexicalAnalyzer.save ylnP2
-	cp SyntacticalAnalyzer.h ylnP2
-	cp SyntacticalAnalyzer.cpp ylnP2
-	cp makefile ylnP2
-	cp README.txt ylnP2
-	tar cfvz ylnP2.tgz ylnP2
-	cp ylnP2.tgz ~tiayln/cs460drop
+	rm -rf TeamRP2
+	mkdir TeamRP2
+	cp Project2.cpp TeamRP2
+	cp LexicalAnalyzer.h TeamRP2
+	cp LexicalAnalyzer.save TeamRP2
+	cp SyntacticalAnalyzer.h TeamRP2
+	cp SyntacticalAnalyzer.cpp TeamRP2
+	cp makefile TeamRP2
+	cp README.txt TeamRP2
+	tar cfvz TeamRP2.tgz TeamRP2
+	cp TeamRP2.tgz ~tiawatts/cs460drop
