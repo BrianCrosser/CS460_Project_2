@@ -1,6 +1,7 @@
 This is the Syntactical Analyzer for Project 2
-CS 460 - Fall 2016.
+CS 460 - Spring 2017.
 
-Written by:
+Written by: Brian Crosser, Kevin Gantsweg, Michelle Padgett
 
-It all works perfectly! (I think....)
+
+Bugs in code
